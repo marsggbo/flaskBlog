@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}
+	{% if title %}
+	{{ title }}
+	{% else %}
+	MARSGGBO的博客
+	{% endif %}
+{% endblock %}
+
+{% block head %}
+	{{ super() }}
+	<link rel="stylesheet" href="{{ url_for('static',filename='editormd/css/editormd.css')}}"/>
+{% endblock %}
+
+
+{% block page_content %}
+	<div class="page-header">
+		<h1 class="text-center">MARSGGBO</h1>
+		
+
+		<form action="" method="post">
+			{{ form.hidden_tag() }}
+			<!-- 标题&发布 -->
+			<div class="col-lg-12">
+				{{ form.title.label }}
+			</div>
+			<div class="form-group col-lg-11">
+				{{ form.title(type='text',class='form-control')}}
+			</div>
+			<div class="form-group col-lg-1">
+				{{ form.submit(type='submit',class='btn btn-info')}}
+			</div>
+			<br>
+			
+			<!-- 分类&标签 -->
+			<div class="form-group col-lg-6">
+				{{ form.categories.label }}{{ form.categories(type='text' ,class='form-control')}}
+			</div>
+			<div class="form-group col-lg-6">
+				{{ form.tags.label }}{{ form.tags(type='text',class='form-control')}}
+			</div>
+			<br>
+
+			<!-- 内容 -->
+			 <div class="form-group col-lg-12">
+                {{ form.content.label }}
+                {% if form.content.errors %}
+                    {% for e in form.content.errors %}
+                        <p class="help-block">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+                <div id="test-editormd" class="form-control">
+                    {{ form.content(style="display:none;") }}
+                </div>
+            </div
+		</form>
+
+		<script src="{{ url_for('static',filename='js/jquery-3.1.1.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='editormd/editormd.min.js') }}"></script>
+		<script type="text/javascript">
+		    var testEditor;
+		    $(function () {
+		        testEditor = editormd("test-editormd", {
+		            width: "100%",
+		            height: 640,
+		            syncScrolling: "single",
+		            path: "{{ url_for('static',filename='editormd/lib/') }}"
+		        });
+		    });
+		</script>
+	</div>
+{% endblock %}
