@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "bootstrap/pagination.html" import render_pagination %}
 {% block title %}
 	{% if title %}
 	{{ title }}
@@ -10,7 +11,38 @@
 
 
 {% block page_content %}
-	<div class="page-header">
-		<h1 class="text-center">MARSGGBO</h1>
-	</div>
+    <div class="col-lg-2"></div>
+    <div class="col-lg-8">
+        {% for article in articles %}
+        <header class="article-header">
+            <h1 class="article-title">
+                {{ article.title }}
+            </h1>
+            <div class="article-mata">
+                <span class="article-time">{{ article.timestamp }}</span>
+
+                <span class="article-categories">
+                    <a href="">{{ article.categories }}</a>
+                </span>
+
+                <span class="article-tags">
+                    {% for tag in article.tags.split(",") %}
+                    <span class="article-tags-text">
+                        <a href="">{{ tag }}</a>
+                    </span>
+                    {% endfor %}
+                </span>
+            </div>
+            <div class="article-body">
+                {{ article.content|md|safe|abstract }}
+            </div>
+            {{ article_footer|md|safe }}
+        </header>
+        {% endfor %}
+
+        {% if pagination %}
+            {{ render_pagination(pagination) }}
+        {% endif %}
+    </div>
+    <div class="col-lg-2"></div>
 {% endblock %}

@@ -10,21 +10,38 @@
 {% block head %}
 	{{ super() }}
 	<link rel="stylesheet" href="{{ url_for('static',filename='editormd/css/editormd.css')}}"/>
+	<link rel="stylesheet" href="{{ url_for('static',filename='select2/dist/css/select2.min.css') }}">
+
+	<script src="{{ url_for('static',filename='js/jquery-3.1.1.min.js') }}"></script>
+	<script src="{{ url_for('static',filename='select2/dist/js/select2.min.js') }}"></script>
 {% endblock %}
 
 
 {% block page_content %}
 	<div class="page-header">
 		<h1 class="text-center">MARSGGBO</h1>
-		
+		{% if warning %}
+        {{ warning}}
+		<!--<script type="text/javascript">-->
+		  <!--alert("请将表单填写完整")-->
+		<!--</script>-->
+        {% endif %}
 
 		<form action="" method="post">
 			{{ form.hidden_tag() }}
 			<!-- 标题&发布 -->
 			<div class="col-lg-12">
-				{{ form.title.label }}
 			</div>
 			<div class="form-group col-lg-11">
+
+				{{ form.title.label }}
+
+				{% if form.title.errors %}
+					{% for e in form.content.errors %}
+						<span class="help-block">{{ e }}</span>
+					{% endfor %}
+				{% endif %}
+
 				{{ form.title(type='text',class='form-control')}}
 			</div>
 			<div class="form-group col-lg-1">
@@ -34,39 +51,70 @@
 			
 			<!-- 分类&标签 -->
 			<div class="form-group col-lg-6">
-				{{ form.categories.label }}{{ form.categories(type='text' ,class='form-control')}}
+
+				{{ form.categories.label }}
+
+				{% if form.categories.errors %}
+					{% for e in form.content.errors %}
+						<span class="help-block">{{ e }}</span>
+					{% endfor %}
+				{% endif %}
+
+                {{ form.categories(class='form-control categories')}}
 			</div>
+
+
 			<div class="form-group col-lg-6">
-				{{ form.tags.label }}{{ form.tags(type='text',class='form-control')}}
+				{{ form.tags.label }}
+
+				{% if form.tags.errors %}
+					{% for e in form.content.errors %}
+						<span class="help-block">{{ e }}</span>
+					{% endfor %}
+				{% endif %}
+
+                {{ form.tags(class='form-control tags')}}
 			</div>
+            <script type="text/javascript">
+                $(".categories").select2({
+                    tags: true,
+                    multiple: false
+                });//启动select2
+                $(".tags").select2({
+                    tags: true,
+                    multiple: true,
+                    closeOnSelect: false,
+                    tokenSeparators: [',', ' ']
+                });//启动select2
+			</script>
 			<br>
 
 			<!-- 内容 -->
 			 <div class="form-group col-lg-12">
-                {{ form.content.label }}
-                {% if form.content.errors %}
-                    {% for e in form.content.errors %}
-                        <p class="help-block">{{ e }}</p>
-                    {% endfor %}
-                {% endif %}
-                <div id="test-editormd" class="form-control">
-                    {{ form.content(style="display:none;") }}
-                </div>
-            </div
+				{{ form.content.label }}
+				{% if form.content.errors %}
+					{% for e in form.content.errors %}
+						<p class="help-block">{{ e }}</p>
+					{% endfor %}
+				{% endif %}
+				<div id="test-editormd" class="form-control">
+					{{ form.content(style="display:none;") }}
+				</div>
+			</div>
 		</form>
 
 		<script src="{{ url_for('static',filename='js/jquery-3.1.1.min.js') }}"></script>
 		<script src="{{ url_for('static',filename='editormd/editormd.min.js') }}"></script>
 		<script type="text/javascript">
-		    var testEditor;
-		    $(function () {
-		        testEditor = editormd("test-editormd", {
-		            width: "100%",
-		            height: 640,
-		            syncScrolling: "single",
-		            path: "{{ url_for('static',filename='editormd/lib/') }}"
-		        });
-		    });
+			var testEditor;
+			$(function () {
+				testEditor = editormd("test-editormd", {
+					width: "100%",
+					height: 640,
+					syncScrolling: "single",
+					path: "{{ url_for('static',filename='editormd/lib/') }}"
+				});
+			});
 		</script>
 	</div>
 {% endblock %}

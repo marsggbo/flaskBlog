@@ -3,7 +3,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
-from flaskext.markdown import Markdown
 
 import os
 from config import basedir
@@ -23,7 +22,6 @@ loginManager.session_protection = "strong"
 loginManager.login_view = "login"
 #这里填写你的登陆界面的路由
 
-markdown = Markdown(app)
 bootstrap = Bootstrap(app)
 from app import views,models
 

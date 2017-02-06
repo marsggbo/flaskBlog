@@ -1,11 +1,11 @@
 #coding=utf-8
 
 from flask_wtf import FlaskForm
-from wtforms import StringField,BooleanField,SubmitField,TextAreaField
+from wtforms import StringField,BooleanField,SubmitField,TextAreaField,SelectField,SelectMultipleField
 from wtforms.validators import DataRequired,Required
+from app import db
 from app.models import Article
 
-from flask_pagedown.fields import PageDownField
 
 class LoginForm(FlaskForm):
 	"""docstring for LoginForm"""
@@ -15,17 +15,41 @@ class LoginForm(FlaskForm):
 	remember_me = BooleanField('Remember me?',default=False)
 	submit = SubmitField('Submit')
 
-def getUserFactory():
-	return Article.query
+def parseData(data):
+	result = []
+	for item in data:
+		if ',' in item:
+			for i in range(len(item.split(','))):
+				result.append(item.split(',')[i])
+		else:
+			result.append(item)
+	return list(set(result))
+
+def doubleData(data):
+	result = []
+	for item in data:
+		result.append([item,item])
+	return result
 
 class ArticleForm(FlaskForm):
+	# 读取数据库中分类的数据，并同步至表单
+
+	choices_categories = [item.categories for item in Article.query.all()]
+	choices_tags = [item.tags for item in Article.query.all()]
+	# 标签去重&多标签解析
+	choices_categories = parseData(choices_categories)
+	choices_tags = parseData(choices_tags)
+	# 生成choices
+	choices_tags = doubleData(choices_tags)
+	choices_categories = doubleData(choices_categories)
+
+	categories = SelectField(u'分类', choices=choices_categories, validators=[DataRequired()])
+	tags = SelectMultipleField(u"标签", choices=choices_tags,validators=[DataRequired()])
 	title = StringField(u"标题", validators=[DataRequired()])
-	# category = QuerySelectField(u"分类", query_factory=getUserFactory(), get_label='name')
-	categories = StringField(u'分类',validators=[DataRequired()])
-    # categories = SelectMultipleField(u'分类', coerce=int,validators=[DataRequired()])
-	tags = StringField(u"标签", validators=[DataRequired()]) #这里本来准备绑定到`models.py`定义的`Tag`表的，但是`WTFORMS`貌似没有这种字段，只有用字符串来表示了
 	content = TextAreaField(u"正文", validators=[DataRequired()])
 	submit = SubmitField(u"发布")
 
 	def __init__(self):
 		super(ArticleForm,self).__init__()
+
+

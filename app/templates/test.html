@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script src="//cdn.bootcss.com/select2/4.0.3/js/select2.min.js"></script>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<select id="select2_sample" name="sample" style="width:75%" >
+    <option>4</option>
+    <option>3</option>
+    <option>5</option>
+    <option>6</option>
+    <option>6</option>
+</select>
+
+</body>
+
+<script>
+    $(document).ready(function(){
+
+//        var data = [{text: 'apple'}, {text: 'banana'}, {text: 'pear'}];//下拉列表中的数据项
+
+        $("#select2_sample").select2({
+//            data: data,
+            multiple: true,
+            closeOnSelect: false
+        });//启动select2
+
+    });
+</script>
